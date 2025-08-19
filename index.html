@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>南京浦光生物科技有限公司发货箱唛制作系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c6dbb;
+            --secondary: #1e4a82;
+            --light: #e9f2fa;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: white;
+            font-weight: 600;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            border-top-left-radius: 10px !important;
+            border-top-right-radius: 10px !important;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            padding: 8px 20px;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(44, 109, 187, 0.25);
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .product-item {
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .product-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 5px rgba(44, 109, 187, 0.3);
+        }
+        
+        .product-item.selected {
+            background-color: var(--light);
+            border-color: var(--primary);
+        }
+        
+        .product-table th {
+            background-color: #f1f7fd;
+            font-weight: 600;
+        }
+        
+        .preview-container {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: white;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 250px;
+        }
+        
+        .boxmark-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--secondary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .boxmark-footer {
+            font-size: 14px;
+            color: #666;
+            margin-top: 30px;
+            padding-top: 10px;
+            border-top: 1px dashed #ddd;
+            text-align: right;
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .preview-container, .preview-container * {
+                visibility: visible;
+            }
+            .preview-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                border: none;
+                box-shadow: none;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            /* 打印时强制使用英文 */
+            .chinese-text {
+                display: none !important;
+            }
+            .english-text {
+                display: inline !important;
+            }
+        }
+        
+        .size-option {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .size-option:hover {
+            border-color: var(--primary);
+        }
+        
+        .size-option.selected {
+            border-color: var(--primary);
+            background-color: var(--light);
+        }
+        
+        .print-controls {
+            background-color: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        /* 双语文本样式 */
+        .dual-language {
+            position: relative;
+        }
+        
+        .english-text {
+            display: none;
+        }
+        
+        .chinese-text {
+            display: inline;
+        }
+        
+        @media (min-width: 768px) {
+            .dual-language {
+                display: flex;
+                align-items: center;
+            }
+            
+            .english-text {
+                display: inline;
+                margin-left: 8px;
+                font-size: 0.9em;
+                color: #666;
+            }
+        }
+        
+        /* 表格表头修复 */
+        .table-header-fix {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        @media (min-width: 768px) {
+            .table-header-fix {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header text-center">
+        <h1><i class="fas fa-box-open me-2"></i>南京浦光生物科技有限公司发货箱唛制作系统</h1>
+        <p class="mb-0">Nanjing Poclight Biotechnology Shipping Box Mark Production</p>
+    </div>
+
+    <div class="container no-print">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0 dual-language">
+                            <i class="fas fa-list me-2"></i>
+                            <span class="chinese-text">产品选择</span>
+                            <span class="english-text">Product Selection</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted dual-language">
+                            <span class="chinese-text">请选择试剂产品（可多选）：</span>
+                            <span class="english-text">Please select reagent products (multiple selections allowed):</span>
+                        </p>
+                        
+                        <div class="product-grid" id="productGrid">
+                            <!-- 产品列表将通过JS动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0 dual-language">
+                            <i class="fas fa-edit me-2"></i>
+                            <span class="chinese-text">批号与数量</span>
+                            <span class="english-text">Batch Number & Quantity</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover product-table">
+                                <thead>
+                                    <tr>
+                                        <th width="40%">产品名称</th>
+                                        <th width="30%">批号</th>
+                                        <th width="20%">数量(盒)</th>
+                                        <th width="10%">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="selectedProducts">
+                                    <!-- 已选产品表格将通过JS动态生成 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0 dual-language">
+                            <i class="fas fa-ruler me-2"></i>
+                            <span class="chinese-text">尺寸选择</span>
+                            <span class="english-text">Size Selection</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3 mb-3">
+                                <div class="size-option" data-size="10x15">
+                                    <h5>10x15cm</h5>
+                                    <p class="text-muted dual-language">
+                                        <span class="chinese-text">小型标签</span>
+                                        <span class="english-text">Small Label</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="size-option selected" data-size="15x20">
+                                    <h5>15x20cm</h5>
+                                    <p class="text-muted dual-language">
+                                        <span class="chinese-text">标准尺寸</span>
+                                        <span class="english-text">Standard Size</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="size-option" data-size="20x30">
+                                    <h5>20x30cm</h5>
+                                    <p class="text-muted dual-language">
+                                        <span class="chinese-text">大型标签</span>
+                                        <span class="english-text">Large Label</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="size-option" data-size="a4">
+                                    <h5>A4规格</h5>
+                                    <p class="text-muted dual-language">
+                                        <span class="chinese-text">完整列表</span>
+                                        <span class="english-text">Full List</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="print-controls no-print">
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-outline-secondary me-2" id="clearBtn">
+                    <i class="fas fa-trash me-1"></i>
+                    <span class="chinese-text">清空所有</span>
+                    <span class="english-text">Clear All</span>
+                </button>
+                <button class="btn btn-primary me-2" id="previewBtn">
+                    <i class="fas fa-eye me-1"></i>
+                    <span class="chinese-text">预览箱唛</span>
+                    <span class="english-text">Preview Box Mark</span>
+                </button>
+                <button class="btn btn-success" id="printBtn">
+                    <i class="fas fa-print me-1"></i>
+                    <span class="chinese-text">打印导出</span>
+                    <span class="english-text">Print & Export</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="preview-container" id="previewContainer">
+            <div class="boxmark-header">Nanjing Poclight Biotechnology Co., Ltd.</div>
+            <div id="boxmarkContent">
+                <!-- 箱唛内容将通过JS动态生成 -->
+            </div>
+            <div class="boxmark-footer">
+                <div>System Generation Time: <span id="currentDate"></span></div>
+                <div>Nanjing Poclight Biotechnology Quality Department</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 产品数据
+        const products = [
+            'CRP', 'IL-6', 'PCT', 'KL-6', 'HBP', 'D-Dimer', 'BNP', 'NT-proBNP', 'CK-MB', 'Myo',
+            'hs-cTnT', 'FT4', 'FT3', 'TT4', 'TT3', 'TSH', 'tPSA', 'fPSA', 'CEA', 'AFP',
+            'CYFRA21-1', 'CA19-9', 'CA125', 'β-hCG', 'PRL', 'Prog', 'Cortisol', 'FSH', 'AMH', 'T',
+            'LH', 'E2', 'HbA1c', 'Insulin', '25-OH VD', 'aB12', 'Ferr', 'IgE', 'sFlt-1', 'PlGF'
+        ];
+        
+        // 当前选中的产品和尺寸
+        let selectedProducts = [];
+        let selectedSize = "15x20";
+        
+        // DOM加载完成后执行初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 渲染产品列表
+            renderProductGrid();
+            
+            // 初始化日期
+            document.getElementById('currentDate').textContent = new Date().toLocaleString();
+            
+            // 尺寸选择事件
+            document.querySelectorAll('.size-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.size-option').forEach(o => o.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedSize = this.dataset.size;
+                    updatePreview();
+                });
+            });
+            
+            // 清空按钮事件
+            document.getElementById('clearBtn').addEventListener('click', clearAll);
+            
+            // 预览按钮事件
+            document.getElementById('previewBtn').addEventListener('click', updatePreview);
+            
+            // 打印按钮事件
+            document.getElementById('printBtn').addEventListener('click', function() {
+                updatePreview();
+                window.print();
+            });
+        });
+        
+        // 渲染产品网格
+        function renderProductGrid() {
+            const container = document.getElementById('productGrid');
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+                const productDiv = document.createElement('div');
+                productDiv.className = 'product-item';
+                productDiv.dataset.id = product;
+                productDiv.innerHTML = `<i class="fas fa-vial me-1"></i> ${product}`;
+                
+                productDiv.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                    toggleProductSelection(product);
+                    renderSelectedProductsTable();
+                });
+                
+                container.appendChild(productDiv);
+            });
+        }
+        
+        // 切换产品选择状态
+        function toggleProductSelection(productName) {
+            const index = selectedProducts.findIndex(p => p.name === productName);
+            
+            if (index === -1) {
+                selectedProducts.push({
+                    name: productName,
+                    batch: '',
+                    quantity: 1
+                });
+            } else {
+                selectedProducts.splice(index, 1);
+            }
+        }
+        
+        // 渲染已选产品表格
+        function renderSelectedProductsTable() {
+            const container = document.getElementById('selectedProducts');
+            container.innerHTML = '';
+            
+            if (selectedProducts.length === 0) {
+                container.innerHTML = `<tr>
+                    <td colspan="4" class="text-center text-muted py-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <span class="chinese-text">请选择产品</span>
+                        <span class="english-text">Please select products</span>
+                    </td>
+                </tr>`;
+                return;
+            }
+            
+            selectedProducts.forEach((product, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><i class="fas fa-vial me-2"></i> ${product.name}</td>
+                    <td>
+                        <input type="text" class="form-control batch-input" data-index="${index}" 
+                            value="${product.batch}" placeholder="批号/Batch number">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control quantity-input" data-index="${index}" 
+                            min="1" value="${product.quantity}">
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-danger remove-btn" data-index="${index}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                container.appendChild(row);
+            });
+            
+            // 添加批号/数量输入事件
+            document.querySelectorAll('.batch-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const index = parseInt(this.dataset.index);
+                    selectedProducts[index].batch = this.value;
+                });
+            });
+            
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const index = parseInt(this.dataset.index);
+                    selectedProducts[index].quantity = parseInt(this.value) || 1;
+                });
+            });
+            
+            // 添加删除按钮事件
+            document.querySelectorAll('.remove-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    selectedProducts.splice(index, 1);
+                    
+                    // 更新产品选择网格
+                    document.querySelectorAll('.product-item').forEach(item => {
+                        if (selectedProducts.some(p => p.name === item.dataset.id)) {
+                            item.classList.add('selected');
+                        } else {
+                            item.classList.remove('selected');
+                        }
+                    });
+                    
+                    renderSelectedProductsTable();
+                });
+            });
+        }
+        
+        // 更新预览
+        function updatePreview() {
+            const container = document.getElementById('boxmarkContent');
+            
+            if (selectedProducts.length === 0) {
+                container.innerHTML = `<div class="text-center text-muted py-5">
+                    <i class="fas fa-info-circle fa-2x mb-2"></i>
+                    <p class="chinese-text">请选择产品并输入批号</p>
+                    <p class="english-text">Please select products and enter batch numbers</p>
+                </div>`;
+                return;
+            }
+            
+            // 根据选择的尺寸调整显示
+            let tableClass = 'table';
+            if (selectedSize === '10x15') tableClass += ' table-sm';
+            if (selectedSize === '20x30' || selectedSize === 'a4') tableClass += ' table-lg';
+            
+            let tableContent = `<table class="${tableClass}">
+                <thead class="table-light">
+                    <tr>
+                        <th>No.</th>
+                        <th>Product Name</th>
+                        <th>Batch Number</th>
+                        <th>Quantity (Box)</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+            
+            selectedProducts.forEach((product, index) => {
+                tableContent += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${product.name}</td>
+                    <td>${product.batch || 'Not entered'}</td>
+                    <td>${product.quantity}</td>
+                </tr>`;
+            });
+            
+            tableContent += `</tbody></table>`;
+            
+            // 添加箱唛额外信息
+            const additionalInfo = `
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-exclamation-circle me-2"></i>Precautions: Handle with care, avoid inversion, avoid direct sunlight
+            </div>
+            `;
+            
+            container.innerHTML = tableContent + additionalInfo;
+        }
+        
+        // 清空所有选择
+        function clearAll() {
+            selectedProducts = [];
+            document.querySelectorAll('.product-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            renderSelectedProductsTable();
+            document.getElementById('boxmarkContent').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
